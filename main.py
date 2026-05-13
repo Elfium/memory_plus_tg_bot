@@ -38,76 +38,74 @@ def wrap_text(text, font, max_width, draw):
     
     return lines
 
+def draw_centered_text(draw, y, text, font, color, width):
+    """Рисует текст по центру по горизонтали"""
+    bbox = draw.textbbox((0, 0), text, font=font)
+    text_width = bbox[2] - bbox[0]
+    x = (width - text_width) // 2
+    draw.text((x, y), text, fill=color, font=font)
+
 def create_word_image(word, definition, example):
     width = 900
     height = 700
     
     # Цвета
     bg_color = (20, 22, 27)        # тёмный фон
-    accent_color = (100, 255, 100) # зелёный акцент
-    text_color = (220, 220, 230)   # светлый текст
+    accent_color = (100, 255, 100) # зелёный акцент для слова
+    text_color = (200, 200, 210)   # светлый текст
+    footer_color = (80, 80, 100)   # серый для подписи внизу
     
     # Создаём изображение
     img = Image.new('RGB', (width, height), bg_color)
     draw = ImageDraw.Draw(img)
     
-    # Загружаем шрифты (попробуем моноширинные, если есть)
+    # Загружаем шрифты
     try:
-        font_title = ImageFont.truetype("fonts/JetBrainsMono-Bold.ttf", 48)
-        font_text = ImageFont.truetype("fonts/JetBrainsMono-Regular.ttf", 28)
-        font_small = ImageFont.truetype("fonts/JetBrainsMono-Regular.ttf", 22)
+        font_word = ImageFont.truetype("fonts/JetBrainsMono-Bold.ttf", 56)
+        font_text = ImageFont.truetype("fonts/JetBrainsMono-Regular.ttf", 30)
+        font_footer = ImageFont.truetype("fonts/JetBrainsMono-Regular.ttf", 20)
     except:
-        # Если шрифтов нет — используем встроенные
-        font_title = ImageFont.load_default()
+        font_word = ImageFont.load_default()
         font_text = ImageFont.load_default()
-        font_small = ImageFont.load_default()
+        font_footer = ImageFont.load_default()
     
-    # Рисуем рамку
-    #draw.rectangle([10, 10, width-10, height-10], outline=accent_color, width=2)
-    
-    # Заголовок
-    #title_text = ">>> СЛОВО ДНЯ <<<"
-    bbox = draw.textbbox((0, 0), title_text, font=font_title)
-    title_width = bbox[2] - bbox[0]
-    draw.text(((width - title_width) // 2, 40), title_text, fill=accent_color, font=font_title)
-    
-    # Само слово
-    word_text = word
-    bbox = draw.textbbox((0, 0), word_text, font=font_title)
+    # Само слово (крупно, по центру, зелёное)
+    word_text = word.upper()
+    bbox = draw.textbbox((0, 0), word_text, font=font_word)
     word_width = bbox[2] - bbox[0]
-    draw.text(((width - word_width) // 2, 130), word_text, fill=accent_color, font=font_title)
+    word_x = (width - word_width) // 2
+    draw.text((word_x, 100), word_text, fill=accent_color, font=font_word)
     
-    # Разделитель
-    draw.line(((80, 210), (width-80, 210)), fill=accent_color, width=1)
+    # Тонкая линия-разделитель под словом
+    line_y = 200
+    draw.line(((width // 4, line_y), (width * 3 // 4, line_y)), fill=accent_color, width=1)
     
-    # Значение
-    y = 260
-    draw.text((60, y), fill=accent_color, font=font_small)
-    y += 40
-    
-    def_lines = wrap_text(definition, font_text, width - 120, draw)
+    # Значение (перевод) — по центру, перенос строк
+    y = 250
+    def_lines = wrap_text(definition, font_text, width - 100, draw)
     for line in def_lines:
-        draw.text((80, y), line, fill=text_color, font=font_text)
+        draw_centered_text(draw, y, line, font_text, text_color, width)
+        y += 50
+    
+    # Пример предложения — по центру
+    if example:
         y += 40
+        example_text = f"\"{example}\""
+        ex_lines = wrap_text(example_text, font_text, width - 100, draw)
+        for line in ex_lines:
+            draw_centered_text(draw, y, line, font_text, text_color, width)
+            y += 45
     
-    # Пример
-    y += 30
-    draw.text((60, y), fill=accent_color, font=font_small)
-    y += 40
-    
-    example_text = f"\"{example}\""
-    ex_lines = wrap_text(example_text, font_text, width - 120, draw)
-    for line in ex_lines:
-        draw.text((80, y), line, fill=text_color, font=font_text)
-        y += 40
-    
-    # Подвал
-    y = height - 50
-    draw.text((60, y), "~ daily english word ~", fill=(100, 100, 120), font=font_small)
+    # Подпись "elfium" внизу по центру
+    footer_text = "elfium"
+    bbox = draw.textbbox((0, 0), footer_text, font=font_footer)
+    footer_width = bbox[2] - bbox[0]
+    footer_x = (width - footer_width) // 2
+    draw.text((footer_x, height - 50), footer_text, fill=footer_color, font=font_footer)
     
     # Сохраняем
     bio = BytesIO()
-    bio.name = 'word_of_the_day.png'
+    bio.name = 'word.png'
     img.save(bio, 'PNG')
     bio.seek(0)
     
@@ -116,7 +114,7 @@ def create_word_image(word, definition, example):
 def send_word():
     word, definition, example = get_random_word()
     image_bytes = create_word_image(word, definition, example)
-    bot.send_photo(CHAT_ID, photo=image_bytes, caption=f"📖 Слово дня: {word}")
+    bot.send_photo(CHAT_ID, photo=image_bytes)
 
 if __name__ == '__main__':
     send_word()
