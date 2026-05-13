@@ -36,19 +36,29 @@ def capitalize_first(text):
         return text
     return text[0].upper() + text[1:].lower()
 
+def add_period(text):
+    """Добавляет точку в конце, если её нет"""
+    if not text:
+        return text
+    text = text.rstrip()
+    if not text.endswith('.'):
+        return text + '.'
+    return text
+
 def send_word():
     word, definition, example = get_random_word()
     
     current_day = get_day_count()
     word_formatted = capitalize_first(word)
     definition_formatted = capitalize_first(definition)
+    example_formatted = add_period(example)
     
-    # Первое сообщение: Day 42 (без двоеточия)
+    # Первое сообщение: Day 42
     day_message = f"Day {current_day}"
     bot.send_message(CHAT_ID, day_message)
     
     # Второе сообщение: Word | Translation и пример курсивом
-    content_message = f"*{word_formatted}*  |  {definition_formatted}\n\n_{example}_"
+    content_message = f"*{word_formatted}*  |  {definition_formatted}\n\n_{example_formatted}_"
     bot.send_message(CHAT_ID, content_message, parse_mode='Markdown')
     
     save_day_count(current_day + 1)
