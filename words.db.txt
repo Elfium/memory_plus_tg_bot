@@ -1,0 +1,6 @@
+CREATE TABLE words (
+    id INTEGER PRIMARY KEY,
+    word TEXT NOT NULL,
+    definition TEXT NOT NULL,
+    example TEXT
+);
