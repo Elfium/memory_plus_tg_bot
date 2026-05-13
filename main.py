@@ -21,5 +21,5 @@ def send_word():
     message = f"📚 *Слово дня:* {word.upper()}\n\n📖 *Значение:* {definition}\n\n💡 *Пример:* _{example}_"
     bot.send_message(CHAT_ID, message, parse_mode='Markdown')
 
-if name == '__main__':
+if __name__ == '__main__':
     send_word()
