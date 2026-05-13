@@ -63,16 +63,16 @@ def create_word_image(word, definition, example):
         font_small = ImageFont.load_default()
     
     # Рисуем рамку
-    draw.rectangle([10, 10, width-10, height-10], outline=accent_color, width=2)
+    #draw.rectangle([10, 10, width-10, height-10], outline=accent_color, width=2)
     
     # Заголовок
-    title_text = ">>> СЛОВО ДНЯ <<<"
+    #title_text = ">>> СЛОВО ДНЯ <<<"
     bbox = draw.textbbox((0, 0), title_text, font=font_title)
     title_width = bbox[2] - bbox[0]
     draw.text(((width - title_width) // 2, 40), title_text, fill=accent_color, font=font_title)
     
     # Само слово
-    word_text = f"$ {word.upper()}"
+    word_text = word
     bbox = draw.textbbox((0, 0), word_text, font=font_title)
     word_width = bbox[2] - bbox[0]
     draw.text(((width - word_width) // 2, 130), word_text, fill=accent_color, font=font_title)
@@ -82,7 +82,7 @@ def create_word_image(word, definition, example):
     
     # Значение
     y = 260
-    draw.text((60, y), "[ значение ]", fill=accent_color, font=font_small)
+    draw.text((60, y), fill=accent_color, font=font_small)
     y += 40
     
     def_lines = wrap_text(definition, font_text, width - 120, draw)
@@ -92,7 +92,7 @@ def create_word_image(word, definition, example):
     
     # Пример
     y += 30
-    draw.text((60, y), "[ пример ]", fill=accent_color, font=font_small)
+    draw.text((60, y), fill=accent_color, font=font_small)
     y += 40
     
     example_text = f"\"{example}\""
