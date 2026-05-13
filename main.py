@@ -7,7 +7,6 @@ TOKEN = os.getenv('BOT_TOKEN')
 CHAT_ID = os.getenv('CHAT_ID')
 bot = telebot.TeleBot(TOKEN)
 
-# Файл для хранения счётчика
 COUNTER_FILE = "day_counter.txt"
 
 def get_day_count():
@@ -43,12 +42,10 @@ def send_word():
     word_formatted = capitalize_first(word)
     definition_formatted = capitalize_first(definition)
     
-    # Первое сообщение: Day: 42 (без курсива)
-    day_message = f"Day: {current_day}"
+    day_message = f"Day {current_day}"
     bot.send_message(CHAT_ID, day_message)
     
-    # Второе сообщение: Word | Translation и пример в кавычках курсивом
-    content_message = f"*{word_formatted}*  |  {definition_formatted}\n\n\"_{example}_\""
+    content_message = f"*{word_formatted}*  |  {definition_formatted}\n\n\_{example}_\"
     bot.send_message(CHAT_ID, content_message, parse_mode='Markdown')
     
     save_day_count(current_day + 1)
