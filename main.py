@@ -43,12 +43,13 @@ def send_word():
     word_formatted = capitalize_first(word)
     definition_formatted = capitalize_first(definition)
     
-    # Формат: Word | Translation
-    #         "Example sentence"
-    #         Day X (курсивом)
-    message = f"*{word_formatted}*  |  {definition_formatted}\n\n\"_{example}_\"\n\n_Day {current_day}_"
+    # Первое сообщение: Day: 42 (без курсива)
+    day_message = f"Day: {current_day}"
+    bot.send_message(CHAT_ID, day_message)
     
-    bot.send_message(CHAT_ID, message, parse_mode='Markdown')
+    # Второе сообщение: Word | Translation и пример в кавычках курсивом
+    content_message = f"*{word_formatted}*  |  {definition_formatted}\n\n\"_{example}_\""
+    bot.send_message(CHAT_ID, content_message, parse_mode='Markdown')
     
     save_day_count(current_day + 1)
 
