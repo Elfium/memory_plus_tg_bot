@@ -1,9 +1,9 @@
-name: Daily Word
+name: Daily English Word
 
 on:
   schedule:
-    - cron: '0 9 * * *'  # Каждый день в 09:00 UTC
-  workflow_dispatch:  # Для ручного запуска
+    - cron: '0 10 * * *'
+  workflow_dispatch:
 
 jobs:
   send-word:
