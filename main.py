@@ -41,12 +41,12 @@ def send_word():
     
     current_day = get_day_count()
     word_formatted = capitalize_first(word)
-    definition_formatted = capitalize_first(definition)  # Перевод с большой буквы
+    definition_formatted = capitalize_first(definition)
     
     # Формат: Word | Translation
     #         "Example sentence"
-    #         Day X
-    message = f"*{word_formatted}*  |  {definition_formatted}\n\n_{example}_\n\nDay {current_day}"
+    #         Day X (курсивом)
+    message = f"*{word_formatted}*  |  {definition_formatted}\n\n\"_{example}_\"\n\n_Day {current_day}_"
     
     bot.send_message(CHAT_ID, message, parse_mode='Markdown')
     
