@@ -2,12 +2,14 @@ name: Daily English Word
 
 on:
   schedule:
-    - cron: '0 10 * * *'
+    - cron: '0 9 * * *'
   workflow_dispatch:
 
 jobs:
   send-word:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # 👈 ЭТО РАЗРЕШАЕТ МЕНЯТЬ ФАЙЛЫ
     steps:
       - uses: actions/checkout@v3
       
