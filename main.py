@@ -7,22 +7,6 @@ TOKEN = os.getenv('BOT_TOKEN')
 CHAT_ID = os.getenv('CHAT_ID')
 bot = telebot.TeleBot(TOKEN)
 
-# Файл для хранения счётчика
-COUNTER_FILE = "day_counter.txt"
-
-def get_day_count():
-    """Читает текущий день из файла"""
-    try:
-        with open(COUNTER_FILE, "r") as f:
-            return int(f.read().strip())
-    except:
-        return 1
-
-def save_day_count(day):
-    """Сохраняет текущий день в файл"""
-    with open(COUNTER_FILE, "w") as f:
-        f.write(str(day))
-
 def get_random_word():
     conn = sqlite3.connect('words.db')
     cursor = conn.cursor()
@@ -37,7 +21,6 @@ def capitalize_first(text):
     return text[0].upper() + text[1:].lower()
 
 def add_period(text):
-    """Добавляет точку в конце, если её нет"""
     if not text:
         return text
     text = text.rstrip()
@@ -48,20 +31,13 @@ def add_period(text):
 def send_word():
     word, definition, example = get_random_word()
     
-    current_day = get_day_count()
     word_formatted = capitalize_first(word)
     definition_formatted = capitalize_first(definition)
     example_formatted = add_period(example)
     
-    # Первое сообщение: Day 42
-    day_message = f"Day {current_day}"
-    bot.send_message(CHAT_ID, day_message)
-    
-    # Второе сообщение: Word | Translation и пример курсивом
-    content_message = f"*{word_formatted}*  |  {definition_formatted}\n\n_{example_formatted}_"
-    bot.send_message(CHAT_ID, content_message, parse_mode='Markdown')
-    
-    save_day_count(current_day + 1)
+    # Отправляем только слово, перевод и пример
+    message = f"*{word_formatted}*  |  {definition_formatted}\n\n_{example_formatted}_"
+    bot.send_message(CHAT_ID, message, parse_mode='Markdown')
 
 if __name__ == '__main__':
     send_word()
